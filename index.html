@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insider Alert Bot — real-time SEC Form 4 alerts, filtered</title>
+<meta name="description" content="A Discord bot that reads every SEC Form 4 insider-trading filing in real time and posts only the ones worth reading. Free tier, no signup.">
+<style>
+  /* ---- tokens: light is the base, both dark paths redefine only these ---- */
+  :root{
+    --ground:#F3F5EF;
+    --surface:#FFFFFF;
+    --surface-sunk:#EAEDE4;
+    --ink:#171B15;
+    --ink-soft:#3D453A;
+    --muted:#646C5F;
+    --rule:#D6DACC;
+    --rule-soft:#E4E7DC;
+    --buy:#1E6B45;
+    --buy-wash:#E3EFE7;
+    --sell:#96382B;
+    --sell-wash:#F3E4E1;
+    --focus:#1E6B45;
+
+    --serif: Charter, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-xs:.7rem; --fs-sm:.8125rem; --fs-base:1.0625rem; --fs-lg:1.1875rem;
+    --fs-xl:1.5rem; --fs-2xl:2.125rem; --fs-3xl:3rem;
+
+    --col: 43rem;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#111310;
+      --surface:#191C17;
+      --surface-sunk:#14170F;
+      --ink:#E9ECE3;
+      --ink-soft:#C2C8BA;
+      --muted:#8F9887;
+      --rule:#2B3027;
+      --rule-soft:#232720;
+      --buy:#5FB185;
+      --buy-wash:#17281F;
+      --sell:#CE7263;
+      --sell-wash:#2A1C19;
+      --focus:#5FB185;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#111310;
+    --surface:#191C17;
+    --surface-sunk:#14170F;
+    --ink:#E9ECE3;
+    --ink-soft:#C2C8BA;
+    --muted:#8F9887;
+    --rule:#2B3027;
+    --rule-soft:#232720;
+    --buy:#5FB185;
+    --buy-wash:#17281F;
+    --sell:#CE7263;
+    --sell-wash:#2A1C19;
+    --focus:#5FB185;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:var(--fs-base);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--buy-wash);color:var(--ink)}
+  a{color:var(--buy);text-underline-offset:.18em;text-decoration-thickness:.06em}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:2px}
+
+  .wrap{width:100%;max-width:var(--col);margin-inline:auto;padding-inline:1.5rem}
+
+  /* ---- masthead ---- */
+  .masthead{border-bottom:1px solid var(--rule);background:var(--surface)}
+  .masthead .wrap{display:flex;align-items:baseline;gap:.75rem;padding-block:.9rem}
+  .mark{
+    font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.14em;text-transform:uppercase;
+    color:var(--buy);border:1px solid var(--buy);border-radius:2px;padding:.18em .45em;
+  }
+  .mark-name{font-family:var(--serif);font-size:var(--fs-sm);color:var(--ink-soft);letter-spacing:.01em}
+  .mark-right{margin-left:auto;font-family:var(--mono);font-size:var(--fs-xs);color:var(--muted);letter-spacing:.08em}
+
+  /* ---- hero ---- */
+  .hero{padding-block:4.5rem 3rem;border-bottom:1px solid var(--rule)}
+  .eyebrow{
+    font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 1.4rem;
+  }
+  h1{
+    font-family:var(--serif);font-weight:600;font-size:var(--fs-3xl);line-height:1.04;
+    letter-spacing:-.018em;margin:0 0 1.1rem;text-wrap:balance;
+  }
+  h1 em{font-style:italic;color:var(--buy)}
+  .standfirst{font-size:var(--fs-lg);color:var(--ink-soft);margin:0 0 2rem;max-width:34rem}
+  .cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:1rem}
+  .btn{
+    display:inline-block;font-family:var(--sans);font-size:var(--fs-base);font-weight:600;
+    background:var(--buy);color:var(--ground);text-decoration:none;
+    padding:.7rem 1.35rem;border-radius:3px;border:1px solid var(--buy);
+    transition:opacity .15s ease;
+  }
+  .btn:hover{opacity:.88}
+  .cta-note{font-family:var(--mono);font-size:var(--fs-sm);color:var(--muted)}
+
+  /* ---- generic section ---- */
+  section{padding-block:3.25rem;border-bottom:1px solid var(--rule)}
+  h2{
+    font-family:var(--serif);font-weight:600;font-size:var(--fs-xl);line-height:1.2;
+    letter-spacing:-.012em;margin:0 0 .5rem;text-wrap:balance;
+  }
+  .lede{color:var(--muted);margin:0 0 2rem;max-width:36rem}
+  p{margin:0 0 1rem}
+  p:last-child{margin-bottom:0}
+
+  /* ---- latency diagram: the actual product ---- */
+  .track{display:grid;gap:.5rem;margin:0 0 1.5rem}
+  .track-row{
+    display:grid;grid-template-columns:5.5rem 1fr;align-items:center;gap:1rem;
+  }
+  .track-label{
+    font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);text-align:right;
+  }
+  .track-label.is-paid{color:var(--buy)}
+  .rail{
+    position:relative;height:2.35rem;background:var(--surface-sunk);
+    border:1px solid var(--rule-soft);border-radius:2px;overflow:hidden;
+  }
+  .fill{
+    position:absolute;inset-block:0;left:0;background:var(--buy-wash);
+    border-right:2px solid var(--buy);
+  }
+  .fill.is-wait{background:repeating-linear-gradient(
+      -45deg,transparent 0 6px,var(--rule-soft) 6px 12px);border-right-color:var(--muted)}
+  .pin{
+    position:absolute;top:50%;transform:translate(-50%,-50%);
+    font-family:var(--mono);font-size:var(--fs-xs);white-space:nowrap;
+    background:var(--surface);border:1px solid var(--rule);border-radius:2px;
+    padding:.16em .45em;color:var(--ink-soft);
+  }
+  /* right-anchored so the label sits inside the rail instead of clipping at the edge */
+  .pin.at-end{left:auto;right:.4rem;transform:translateY(-50%)}
+  .axis{
+    display:grid;grid-template-columns:5.5rem 1fr;gap:1rem;
+    font-family:var(--mono);font-size:var(--fs-xs);color:var(--muted);
+  }
+  .axis-marks{display:flex;justify-content:space-between}
+
+  /* ---- filters ---- */
+  dl.filters{display:grid;gap:0;margin:0;border-top:1px solid var(--rule-soft)}
+  dl.filters > div{
+    display:grid;grid-template-columns:12rem 1fr;gap:1.25rem;
+    padding-block:.95rem;border-bottom:1px solid var(--rule-soft);
+  }
+  dt{
+    font-family:var(--mono);font-size:var(--fs-sm);color:var(--buy);
+    letter-spacing:.01em;
+  }
+  dd{margin:0;color:var(--ink-soft);font-size:var(--fs-sm);line-height:1.55}
+
+  /* ---- sample alert ---- */
+  .sample-scroll{overflow-x:auto}
+  .alert{
+    background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--buy);
+    border-radius:3px;padding:1.1rem 1.25rem;min-width:19rem;
+  }
+  .alert + .alert{margin-top:.9rem}
+  .alert-head{
+    font-family:var(--serif);font-size:var(--fs-lg);font-weight:600;color:var(--buy);
+    margin:0 0 .85rem;letter-spacing:-.01em;
+  }
+  .fields{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));
+    gap:.75rem 1.5rem;margin:0;
+  }
+  .field dt{
+    font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 .12rem;
+  }
+  .field dd{
+    font-family:var(--mono);font-size:var(--fs-sm);color:var(--ink);margin:0;
+    font-variant-numeric:tabular-nums;
+  }
+  .tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.9rem}
+  .tag{
+    font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.04em;
+    background:var(--buy-wash);color:var(--buy);border:1px solid var(--buy);
+    border-radius:2px;padding:.14em .45em;
+  }
+  .alert-foot{
+    font-size:var(--fs-xs);color:var(--muted);margin:.9rem 0 0;
+    padding-top:.7rem;border-top:1px solid var(--rule-soft);
+  }
+
+  /* ---- tiers ---- */
+  .tiers{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .tier{
+    background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    padding:1.25rem;display:flex;flex-direction:column;gap:.6rem;
+  }
+  .tier.is-paid{border-color:var(--buy)}
+  .tier-name{
+    font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);margin:0;
+  }
+  .tier.is-paid .tier-name{color:var(--buy)}
+  .tier-price{
+    font-family:var(--serif);font-size:var(--fs-2xl);line-height:1;margin:0;
+    letter-spacing:-.02em;font-variant-numeric:tabular-nums;
+  }
+  .tier-price span{font-family:var(--mono);font-size:var(--fs-sm);color:var(--muted);letter-spacing:0}
+  .tier ul{margin:0;padding-left:1.1rem;color:var(--ink-soft);font-size:var(--fs-sm);line-height:1.6}
+  .tier li::marker{color:var(--muted)}
+
+  /* ---- honest notes ---- */
+  .notes{display:grid;gap:1.1rem}
+  .note{
+    display:grid;grid-template-columns:auto 1fr;gap:.9rem;align-items:start;
+    font-size:var(--fs-sm);color:var(--ink-soft);
+  }
+  .note-key{
+    font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);border:1px solid var(--rule);border-radius:2px;padding:.16em .45em;
+    white-space:nowrap;
+  }
+
+  /* ---- close ---- */
+  .close{padding-block:3.5rem;text-align:left}
+  .close h2{font-size:var(--fs-2xl)}
+  footer{padding-block:2rem 3rem;color:var(--muted);font-size:var(--fs-xs);line-height:1.7}
+  footer p{margin:0 0 .4rem}
+  .disclaimer{font-family:var(--mono);letter-spacing:.02em}
+
+  @media (max-width:640px){
+    :root{--fs-3xl:2.25rem;--fs-2xl:1.75rem;--fs-xl:1.3rem}
+    .hero{padding-block:3rem 2.25rem}
+    dl.filters > div{grid-template-columns:1fr;gap:.25rem}
+    .tiers{grid-template-columns:1fr}
+    .track-row,.axis{grid-template-columns:4rem 1fr;gap:.6rem}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <span class="mark">F4</span>
+    <span class="mark-name">Insider Alert Bot</span>
+    <span class="mark-right">SEC EDGAR &middot; live</span>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Form 4 &mdash; Statement of changes in beneficial ownership</p>
+      <h1>About a thousand insider filings a day. <em>Maybe six</em> are worth your attention.</h1>
+      <p class="standfirst">A Discord bot that reads every SEC Form 4 as it lands, throws away the vesting and the tax withholding and the penny-stock churn, and posts what's left.</p>
+      <div class="cta-row">
+        <a class="btn" href="https://discord.gg/AXSVjJrDWR">Join the free channel</a>
+        <span class="cta-note">no signup &middot; no email</span>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2>What the bot actually does</h2>
+      <p class="lede">Corporate insiders must file a Form 4 whenever they trade their own company's stock. It's public the moment it's filed. The problem was never access &mdash; it's that nearly all of it is procedural noise.</p>
+      <dl class="filters">
+        <div>
+          <dt>large-buy</dt>
+          <dd>An insider putting real money in, above a dollar-value threshold rather than a share count.</dd>
+        </div>
+        <div>
+          <dt>cluster-buy</dt>
+          <dd>Several different insiders at the same company buying inside a short window &mdash; the pattern a single purchase can't show you.</dd>
+        </div>
+        <div>
+          <dt>first-time-buyer</dt>
+          <dd>An insider buying a name they have never bought before, as opposed to topping up a position they've held for years.</dd>
+        </div>
+        <div>
+          <dt>notable-sale</dt>
+          <dd>Large disposals by officers and directors, separated from the automatic scheduled selling that dominates the feed.</dd>
+        </div>
+      </dl>
+      <p style="margin-top:1.5rem;color:var(--muted);font-size:var(--fs-sm)">NYSE and NASDAQ only. OTC and unlisted tickers are dropped before anything is evaluated, which removes most of what remains.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>The only thing that costs money is time</h2>
+      <p class="lede">Both channels get identical alerts, from the same parser, with the same filtering. Premium is not a bigger feed &mdash; it's the same feed, sooner.</p>
+
+      <div class="track">
+        <div class="track-row">
+          <span class="track-label is-paid">Premium</span>
+          <div class="rail">
+            <div class="fill" style="width:11%"></div>
+            <span class="pin" style="left:11%">posted</span>
+          </div>
+        </div>
+        <div class="track-row">
+          <span class="track-label">Free</span>
+          <div class="rail">
+            <div class="fill is-wait" style="width:100%"></div>
+            <span class="pin at-end">posted</span>
+          </div>
+        </div>
+      </div>
+      <div class="axis">
+        <span></span>
+        <span class="axis-marks">
+          <span>filing hits EDGAR</span>
+          <span>+45 min</span>
+        </span>
+      </div>
+
+      <p style="margin-top:1.75rem;color:var(--ink-soft);font-size:var(--fs-sm)">The bot polls EDGAR every four minutes, so premium lands within roughly one polling cycle of the filing appearing. The free channel holds the same alert for 45 minutes, then posts it unchanged.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>A real alert</h2>
+      <p class="lede">Both of these went out on the dates shown. Nothing here is mocked up.</p>
+      <div class="sample-scroll">
+        <article class="alert">
+          <h3 class="alert-head">CVRX &mdash; CVRx, Inc.</h3>
+          <dl class="fields">
+            <div class="field"><dt>Insider</dt><dd>Binkowski Brent</dd></div>
+            <div class="field"><dt>Title</dt><dd>Chief Operating Officer</dd></div>
+            <div class="field"><dt>Shares</dt><dd>26,223</dd></div>
+            <div class="field"><dt>Price</dt><dd>$2.9147</dd></div>
+            <div class="field"><dt>Total value</dt><dd>$76,432.18</dd></div>
+            <div class="field"><dt>Stake change</dt><dd>+86.6%</dd></div>
+          </dl>
+          <div class="tags"><span class="tag">first-time-buyer</span></div>
+          <p class="alert-foot">Traded 2026&#8209;08&#8209;13 &middot; filed same day</p>
+        </article>
+        <article class="alert">
+          <h3 class="alert-head">LTC &mdash; LTC Properties Inc</h3>
+          <dl class="fields">
+            <div class="field"><dt>Insider</dt><dd>Gruber David L</dd></div>
+            <div class="field"><dt>Title</dt><dd>Insider</dd></div>
+            <div class="field"><dt>Shares</dt><dd>3,500</dd></div>
+            <div class="field"><dt>Price</dt><dd>$38.30</dd></div>
+            <div class="field"><dt>Total value</dt><dd>$134,050.00</dd></div>
+            <div class="field"><dt>Stake change</dt><dd>+7.9%</dd></div>
+          </dl>
+          <div class="tags"><span class="tag">large-buy</span><span class="tag">first-time-buyer</span></div>
+          <p class="alert-foot">Traded 2026&#8209;08&#8209;11 &middot; filed 2 days after the trade</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Two channels</h2>
+      <div class="tiers">
+        <div class="tier">
+          <p class="tier-name">Free</p>
+          <p class="tier-price">$0</p>
+          <ul>
+            <li>Every alert, 45-minute delay</li>
+            <li>No signup, no email address</li>
+            <li>Same filtering, same detail</li>
+            <li>Join and leave whenever</li>
+          </ul>
+        </div>
+        <div class="tier is-paid">
+          <p class="tier-name">Premium</p>
+          <p class="tier-price">$5<span> / month</span></p>
+          <ul>
+            <li>Every alert, no delay</li>
+            <li>Billed through Stripe</li>
+            <li>Cancel any time, access ends</li>
+            <li>Run <code>/subscribe</code> in the server</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Things worth knowing before you join</h2>
+      <div class="notes">
+        <div class="note">
+          <span class="note-key">New</span>
+          <p>This launched recently. The server is small and the alert history is still thin &mdash; you'd be early, with everything that implies.</p>
+        </div>
+        <div class="note">
+          <span class="note-key">Tag noise</span>
+          <p><code>first-time-buyer</code> fires far more often than it eventually will. The bot only knows what it has recorded since it started running, so almost every purchase currently looks like a first. Weight the other three tags more heavily for now.</p>
+        </div>
+        <div class="note">
+          <span class="note-key">Not advice</span>
+          <p>This surfaces public filings faster than reading EDGAR by hand. It doesn't tell you what to do about them, and an insider buying is not a recommendation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="close">
+    <div class="wrap">
+      <h2>The filings are already public. This just gets them in front of you.</h2>
+      <div class="cta-row" style="margin-top:1.5rem">
+        <a class="btn" href="https://discord.gg/AXSVjJrDWR">Join the free channel</a>
+        <span class="cta-note">discord.gg/AXSVjJrDWR</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="disclaimer">Not investment advice. Informational purposes only.</p>
+    <p>Data sourced from SEC EDGAR Form 4 filings, which are public records. This site is not affiliated with or endorsed by the U.S. Securities and Exchange Commission.</p>
+  </div>
+</footer>
+
+</body>
+</html>
