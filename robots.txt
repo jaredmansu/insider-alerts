@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jaredmansu.github.io/insider-alerts/sitemap.xml

@@ -3,8 +3,61 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Insider Alert Bot — real-time SEC Form 4 alerts, filtered</title>
-<meta name="description" content="A Discord bot that reads every SEC Form 4 insider-trading filing in real time and posts only the ones worth reading. Free tier, no signup.">
+<title>Insider Alert Bot — real-time SEC Form 4 insider trading alerts on Discord</title>
+<meta name="description" content="A Discord bot that reads every SEC Form 4 insider-trading filing in real time and posts only the ones worth reading: large buys, cluster buys, first-time buyers and notable executive sales. NYSE/NASDAQ only. Free channel, no signup.">
+<link rel="canonical" href="https://jaredmansu.github.io/insider-alerts/">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+
+<!-- link previews: Discord, Reddit, Slack, X, iMessage -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Insider Alert Bot">
+<meta property="og:url" content="https://jaredmansu.github.io/insider-alerts/">
+<meta property="og:title" content="Insider Alert Bot — real-time SEC Form 4 insider trading alerts on Discord">
+<meta property="og:description" content="A Discord bot that reads every SEC Form 4 insider-trading filing in real time and posts only the ones worth reading: large buys, cluster buys, first-time buyers and notable executive sales. NYSE/NASDAQ only. Free channel, no signup.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Insider Alert Bot — real-time SEC Form 4 insider trading alerts on Discord">
+<meta name="twitter:description" content="A Discord bot that reads every SEC Form 4 insider-trading filing in real time and posts only the ones worth reading: large buys, cluster buys, first-time buyers and notable executive sales. NYSE/NASDAQ only. Free channel, no signup.">
+
+<meta name="theme-color" content="#F3F5EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111310" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231E6B45'/%3E%3Cpath d='M7 22 L13 14 L18 18 L25 9' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Insider Alert Bot",
+  "url": "https://jaredmansu.github.io/insider-alerts/",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Discord",
+  "description": "A Discord bot that reads every SEC Form 4 insider-trading filing in real time and posts only the ones worth reading: large buys, cluster buys, first-time buyers and notable executive sales. NYSE/NASDAQ only. Free channel, no signup.",
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Free",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Every alert, on a 45-minute delay. No signup."
+    },
+    {
+      "@type": "Offer",
+      "name": "Premium",
+      "price": "5.00",
+      "priceCurrency": "USD",
+      "description": "The same alerts with no delay.",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "5.00",
+        "priceCurrency": "USD",
+        "billingDuration": 1,
+        "billingIncrement": 1,
+        "unitCode": "MON"
+      }
+    }
+  ],
+  "isBasedOn": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent"
+}
+</script>
 <style>
   /* ---- tokens: light is the base, both dark paths redefine only these ---- */
   :root{
