@@ -1,5 +1,7 @@
 # Insider Alert Bot
 
+![A sample alert: LTC Properties, insider Gruber David L, 3,500 shares at $38.30 for $134,050.00, stake +7.9%, tagged large-buy and first-time-buyer](./og-image.png)
+
 Real-time SEC **Form 4** insider-trading alerts, delivered to Discord.
 
 **[Join the Discord →](https://discord.gg/AXSVjJrDWR)** · **[insideralert landing page →](https://jaredmansu.github.io/insider-alerts/)**
