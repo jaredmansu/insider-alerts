@@ -50,7 +50,7 @@
       "name": "Premium",
       "price": "5.00",
       "priceCurrency": "USD",
-      "description": "The same alerts with no delay.",
+      "description": "Every alert the moment it is filed, plus a signal grade, the insider's buying history, the live price, a weekly graded report and /insider ticker lookups.",
       "priceSpecification": {
         "@type": "UnitPriceSpecification",
         "price": "5.00",
@@ -364,8 +364,8 @@
 
   <section>
     <div class="wrap">
-      <h2>The only thing that costs money is time</h2>
-      <p class="lede">Both channels get identical alerts, from the same parser, with the same filtering. Premium is not a bigger feed &mdash; it's the same feed, sooner.</p>
+      <h2>Same filings. Premium gets them first, and gets the context.</h2>
+      <p class="lede">Both channels see the same trades, from the same parser, with the same filtering. The free feed posts the fact 45 minutes later. Premium posts it the moment it's filed &mdash; and adds what the filing alone can't tell you: how strong the signal is, who this insider has been, and what the stock is doing right now.</p>
 
       <div class="track">
         <div class="track-row">
@@ -391,7 +391,27 @@
         </span>
       </div>
 
-      <p style="margin-top:1.75rem;color:var(--ink-soft);font-size:var(--fs-sm)">The bot polls EDGAR every four minutes, so premium lands within roughly one polling cycle of the filing appearing. The free channel holds the same alert for 45 minutes, then posts it unchanged.</p>
+      <p style="margin-top:1.75rem;color:var(--ink-soft);font-size:var(--fs-sm)">The bot polls EDGAR every two minutes, so premium lands within roughly one polling cycle of the filing appearing. The free channel holds the same alert for 45 minutes, then posts it without the premium fields.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>What premium adds to every alert</h2>
+      <dl>
+        <dt>Signal grade</dt>
+        <dd>An A&ndash;D score with its reasons shown, e.g. <code>B (6) &middot; CEO &middot; &ge;$250k &middot; +12% stake</code>. The formula is public: senior officer (CEO/CFO/President/Chair) +3, other officer or director +2, 10% owner +1; value &ge;$1M +2 or &ge;$250k +1; stake change &ge;25% or a new position +2, &ge;10% +1; two or more insiders buying the same name in a week +2; a genuine first buy on record or an accumulating pattern +1; a Rule 10b5-1 pre-scheduled trade &minus;2; an option exercise cashed out the same day &minus;3. A &ge; 7, B &ge; 5, C &ge; 3, otherwise D. It is a heuristic that shows its work, not a prediction.</dd>
+        <dt>Insider track record</dt>
+        <dd>This insider's prior open-market buys and sells in the same company, read from their own Form 4 history on EDGAR: how many, at what average price, when the last one was &mdash; or that this is their first on record.</dd>
+        <dt>Price now</dt>
+        <dd>The live quote, how far it sits from the insider's price, and the 52-week range.</dd>
+        <dt>Weekly conviction report</dt>
+        <dd>Every Sunday: the week's buys ranked by grade, cluster buys, and the week's counts. The free channel gets the top three tickers.</dd>
+        <dt><code>/insider TICKER</code></dt>
+        <dd>The recent insider buys and sells in any ticker the bot has logged, with the grade each alert carried, and how many distinct buyers and sellers in the last 90 days.</dd>
+        <dt><code>/watch TICKER</code></dt>
+        <dd>A DM whenever a graded alert fires in a ticker you follow.</dd>
+      </dl>
     </div>
   </section>
 
@@ -440,7 +460,8 @@
           <ul>
             <li>Every alert, 45-minute delay</li>
             <li>No signup, no email address</li>
-            <li>Same filtering, same detail</li>
+            <li>Same filtering, same trade detail</li>
+            <li>Top-3 tickers from the weekly report</li>
             <li>Join and leave whenever</li>
           </ul>
         </div>
@@ -448,9 +469,10 @@
           <p class="tier-name">Premium</p>
           <p class="tier-price">$5<span> / month</span></p>
           <ul>
-            <li>Every alert, no delay</li>
-            <li>Billed through Stripe</li>
-            <li>Cancel any time, access ends</li>
+            <li>Every alert the moment it's filed</li>
+            <li>Signal grade, insider track record, live price on every alert</li>
+            <li>Weekly graded report, <code>/insider</code> and <code>/watch</code></li>
+            <li>Billed through Stripe; cancel any time</li>
             <li>Run <code>/subscribe</code> in the server</li>
           </ul>
         </div>
