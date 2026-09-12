@@ -1,42 +1,31 @@
 # Insider Alert Bot
 
-![A sample alert: LTC Properties, insider Gruber David L, 3,500 shares at $38.30 for $134,050.00, stake +7.9%, tagged large-buy and first-time-buyer](./og-image.png)
+[Visit the website](https://jaredmansu.github.io/insider-alerts/) ·
+[Start a seven-day trial on Discord](https://discord.gg/AXSVjJrDWR)
 
-Real-time SEC **Form 4** insider-trading alerts, delivered to Discord.
+Filtered SEC Form 4 alerts for notable insider buys and executive sales on
+NYSE/NASDAQ listings. Premium includes signal grades, available insider history
+and recent quotes, ticker watchlists, insider lookups, and a weekly graded report.
 
-**[Join the Discord →](https://discord.gg/AXSVjJrDWR)** · **[insideralert landing page →](https://jaredmansu.github.io/insider-alerts/)**
+Seven days of premium access require no card and never convert automatically.
+Continuing access costs $5 USD/month through an opt-in Stripe checkout in Discord.
+After trial expiry, members can remain in the community. This is public filing
+data for research, not investment advice or a prediction of returns.
 
-When a corporate insider buys or sells their own company's stock, they must file a Form 4
-with the SEC. Those filings are public, but they arrive as a firehose of raw XML — hundreds
-a day, mostly routine option grants and tax withholding. This bot watches the EDGAR feed
-continuously and posts only the trades worth looking at.
+## Website
 
-## What gets alerted
+Static HTML, CSS, and JavaScript, served by GitHub Pages from `main` at `/`.
+No build, trackers, paid services, or runtime dependencies.
 
-| Tag | Meaning |
-| --- | --- |
-| `large-buy` | An insider bought more than $100,000 of stock |
-| `cluster-buy` | Two or more insiders bought the same ticker within a week |
-| `notable-sale` | An executive sold more than $1,000,000 |
-| `first-time-buyer` | First purchase recorded from that insider |
+- `index.html`: product, trial/pricing, methodology, historical examples, and FAQ.
+- `styles.css`: responsive layout and scroll-driven animation states.
+- `site.js`: progressive motion, reduced-motion support, pause control, and a
+  copy-command shortcut. Navigation and content remain usable without JavaScript.
+- `og-image.png`: existing social card, preserved.
 
-NYSE/NASDAQ only — OTC and unlisted tickers are filtered out.
+Preview: `python -m http.server 4173 --bind 127.0.0.1` from this directory.
+Push `main` to publish. Keep pricing, thresholds, and scoring synchronized with
+the bot repository. Historical examples must be labeled; never imply a live feed.
 
-Each alert shows the ticker and company, the insider and their title, share count, price,
-total value, the stake change the trade represents, how many days after the trade it was
-filed, whether it was a pre-scheduled Rule 10b5-1 plan sale, and a direct link to the filing
-on sec.gov.
-
-## Tiers
-
-- **Free** — every alert, on a 45-minute delay.
-- **Premium** — the same alerts the moment they are filed. `/subscribe` in the server.
-
-## Not investment advice
-
-Everything posted is public SEC data, reformatted and filtered. It is not investment advice,
-and nobody involved is a licensed financial advisor. Do your own research.
-
----
-
-This repository holds the landing page. The bot itself is closed source.
+The bot lives in a separate private repository. Do not copy its `.env`, database,
+member records, or credentials into this public site.
