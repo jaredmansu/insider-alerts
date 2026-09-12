@@ -21,7 +21,9 @@ No build, trackers, paid services, or runtime dependencies.
 - `styles.css`: responsive layout and scroll-driven animation states.
 - `site.js`: progressive motion, reduced-motion support, pause control, and a
   copy-command shortcut. Navigation and content remain usable without JavaScript.
-- `og-image.png`: existing social card, preserved.
+- `og-trial.png`: current social card matching the seven-day trial offer.
+  Generated with the built-in image-generation tool; see `ASSETS.md` for the prompt.
+- `og-image.png`: historical social card, preserved but no longer referenced.
 
 Preview: `python -m http.server 4173 --bind 127.0.0.1` from this directory.
 Push `main` to publish. Keep pricing, thresholds, and scoring synchronized with
