@@ -38,6 +38,7 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231E6B45'/%3E%3Cpath d='M7 22 L13 14 L18 18 L25 9' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
     />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="sequence.css" />
     <script src="site.js" defer></script>
     <script type="application/ld+json">
       {
@@ -46,7 +47,7 @@
         "name": "Insider Alert Bot",
         "url": "https://jaredmansu.github.io/insider-alerts/",
         "applicationCategory": "FinanceApplication",
-        "image": "https://jaredmansu.github.io/insider-alerts/og-image.png",
+        "image": "https://jaredmansu.github.io/insider-alerts/og-trial.png",
         "operatingSystem": "Discord",
         "description": "Seven-day no-card trial of premium SEC Form 4 alerts on Discord. Continue for $5 USD/month with an opt-in subscription.",
         "offers": [
@@ -97,7 +98,9 @@
       <div class="reading-progress" aria-hidden="true"></div>
     </header>
     <main id="main">
+      <div class="ambient-grid" aria-hidden="true"></div>
       <section class="hero container" aria-labelledby="hero-title">
+        <div class="hero-coordinate" aria-hidden="true">PUBLIC FILINGS / PRIVATE RESEARCH</div>
         <div class="hero-copy">
           <p class="eyebrow">
             <span class="eyebrow-line" aria-hidden="true"></span>The insider’s trade. Your research
@@ -131,7 +134,7 @@
           </div>
           <article class="alert-card" aria-label="Historical LTC insider purchase">
             <div class="alert-topline">
-              <span class="trade-label">Open-market purchase</span
+              <span class="trade-label">Reported purchase</span
               ><span class="filing-label">FORM 4</span>
             </div>
             <div class="ticker-heading">
@@ -145,7 +148,7 @@
                 <dd>Gruber David L</dd>
               </div>
               <div>
-                <dt>Stake change</dt>
+                <dt>Reported holding change</dt>
                 <dd class="positive">+7.9%</dd>
               </div>
               <div>
@@ -157,7 +160,7 @@
                 <dd>$38.30</dd>
               </div>
             </dl>
-            <div class="tags"><span>large-buy</span><span>first-time-buyer</span></div>
+            <div class="tags"><span>large-buy</span><span>first buy in our log</span></div>
             <div class="alert-footer">
               <span>Traded Aug 11, 2026</span><span>Filed 2 days later</span>
             </div>
@@ -166,15 +169,16 @@
             <span class="secondary-symbol" aria-hidden="true">↗</span>
             <div>
               <strong>CVRX <span>Chief Operating Officer</span></strong>
-              <p>$76,432.18 bought <span>+86.6% stake</span></p>
+              <p>$76,432.18 bought <span>+86.6% reported holding</span></p>
               <small>Historical alert · Aug 13, 2026</small>
             </div>
           </div>
           <div class="preview-caption">
             <span class="caption-number">01 /</span>
             <p>
-              A real alert from the archive, reformatted for this page. Every Discord alert links to
-              the original SEC filing.
+              Historical data, reformatted for this page. Holding changes refer to the reported
+              holding, not necessarily the insider’s entire position. Every alert links to the SEC
+              source.
             </p>
           </div>
         </div>
@@ -371,14 +375,76 @@
         </div>
       </section>
       <section class="premium-section" aria-labelledby="premium-title">
+        <div class="signal-sequence" data-sequence>
+          <div class="sequence-sticky">
+            <div class="container sequence-heading">
+              <p class="eyebrow">FROM DISCLOSURE TO YOUR DISCORD</p>
+              <p class="sequence-index" aria-hidden="true">01 / 03</p>
+            </div>
+            <div class="sequence-type" aria-hidden="true">
+              <span>FOLLOW</span><span>THE</span><span>FILING.</span>
+            </div>
+            <div class="sequence-cards" role="group" aria-label="Three layers of an alert">
+              <article class="sequence-card source-card">
+                <div class="sequence-card-top">
+                  <span>01 / THE SOURCE</span><span>SEC EDGAR</span>
+                </div>
+                <div class="document-number" aria-hidden="true">4</div>
+                <h3>Start with what was filed.</h3>
+                <p>The original disclosure. The reported owner. The actual trade date.</p>
+                <div class="document-lines" aria-hidden="true">
+                  <span></span><span></span><span></span>
+                </div>
+                <div class="sequence-card-foot">
+                  PUBLIC RECORD <span aria-hidden="true">↗</span>
+                </div>
+              </article>
+              <article class="sequence-card context-card">
+                <div class="sequence-card-top">
+                  <span>02 / THE CONTEXT</span><span>READ CLOSER</span>
+                </div>
+                <h3>The details change<br />the story.</h3>
+                <div class="context-tokens">
+                  <span>Reported value</span><span>Plan qualifiers</span><span>Ownership scope</span
+                  ><span>Source footnotes</span><span>Sampled history</span>
+                </div>
+                <p>
+                  A research grade with its reasons. A quote with its timestamp. Corrections clearly
+                  labeled.
+                </p>
+                <div class="sequence-card-foot">
+                  MORE TO WORK WITH <span aria-hidden="true">↗</span>
+                </div>
+              </article>
+              <article class="sequence-card delivery-card">
+                <div class="sequence-card-top"><span>03 / YOUR FEED</span><span>DISCORD</span></div>
+                <h3>Your tickers.<br />Your pace.</h3>
+                <div class="command-preview">
+                  <code>/notifications</code><span>Instant · Digest · Quiet hours</span>
+                </div>
+                <p>
+                  Filter private notifications by ticker, purchase or sale, research grade, and
+                  amount.
+                </p>
+                <div class="sequence-card-foot">
+                  THE NEXT MOVE IS YOURS <span aria-hidden="true">↗</span>
+                </div>
+              </article>
+            </div>
+            <div class="container sequence-footer">
+              <span>Public filings. Clear context. Your call.</span
+              ><span class="sequence-meter" aria-hidden="true"><i></i></span>
+            </div>
+          </div>
+        </div>
         <div class="container section">
           <div class="section-heading">
             <div>
-              <p class="eyebrow">02 / A little more context</p>
-              <h2 id="premium-title">The trade is the start.<br />Premium fills in the picture.</h2>
+              <p class="eyebrow">02 / Read beyond the headline</p>
+              <h2 id="premium-title">A filing gets your attention.<br />The details earn it.</h2>
             </div>
             <p>
-              Your trial includes the full experience: earlier alerts, transparent grades, and
+              Your trial includes the full experience: filtered alerts, transparent grades, and
               context that helps you decide what deserves a closer read.
             </p>
           </div>
@@ -408,24 +474,25 @@
                 <span class="feature-label">01 / Insider history</span>
                 <h3>Have they been here before?</h3>
                 <p>
-                  Prior buys and sells in the same company, drawn from the insider’s recent EDGAR
-                  history when available.
+                  Distinct purchase and sale filings in a limited recent sample, with coverage
+                  shown. Multiple execution rows never masquerade as repeat buying.
                 </p>
               </article>
               <article>
                 <span class="feature-label">02 / Price context</span>
                 <h3>The filing price, in perspective.</h3>
                 <p>
-                  A recent market quote alongside the reported trade price, when available. Quotes
-                  are cached and may be delayed.
+                  The reported price beside a timestamped market quote, when available.
+                  Prior-session prices and unverified freshness are labeled. Quotes may be delayed.
                 </p>
               </article>
               <article>
                 <span class="feature-label">03 / Your research routine</span>
                 <h3>Keep up with the names you follow.</h3>
                 <p>
-                  Get ticker watchlist DMs with <code>/watch</code>, pull recorded trades with
-                  <code>/insider</code>, and read the weekly graded report.
+                  Use <code>/watch</code> for tickers and <code>/notifications</code> for filters,
+                  quiet hours, or a daily digest. Explore recorded trades with
+                  <code>/insider</code>.
                 </p>
               </article>
             </div>
@@ -460,7 +527,7 @@
               <li>Premium alerts as soon as they’re detected</li>
               <li>Signal grades, history, and available quotes</li>
               <li>Ticker watchlists and insider lookups</li>
-              <li>The weekly graded report</li>
+              <li>Private filters, quiet hours, and daily digests</li>
               <li>No card and no automatic subscription</li>
             </ul>
             <a class="button button-outline" href="https://discord.gg/AXSVjJrDWR"
@@ -480,7 +547,7 @@
               <li>A–D signal grade with the reasons shown</li>
               <li>Insider history and recent quotes, when available</li>
               <li>Weekly report with a graded ranking</li>
-              <li><code>/watch</code> ticker DMs and <code>/insider</code> lookups</li>
+              <li>Watchlists, private filters, quiet hours, and digests</li>
             </ul>
             <a class="button button-primary" href="#get-premium"
               >Continue with premium <span aria-hidden="true">↓</span></a
@@ -535,8 +602,11 @@
                   <dd>At least $1 million +2; otherwise at least $250,000 +1.</dd>
                 </div>
                 <div>
-                  <dt>Stake change</dt>
-                  <dd>At least 25%, or a new purchase position, +2; otherwise at least 10% +1.</dd>
+                  <dt>Reported holding change</dt>
+                  <dd>
+                    At least 25%, or a new reported holding, +2; otherwise at least 10% +1.
+                    Calculated within the reported holding only; omitted for joint-owner filings.
+                  </dd>
                 </div>
                 <div>
                   <dt>Cluster buying</dt>
@@ -546,7 +616,8 @@
                   <dt>Purchase history</dt>
                   <dd>
                     +1 for no prior buys in at least five checked historical filings, or for at
-                    least two prior buys. Applied only to purchases when history is available.
+                    least two prior purchase dates. Applied only to purchases with a single
+                    reporting owner when history is available.
                   </dd>
                 </div>
                 <div>
@@ -571,8 +642,9 @@
               </p>
               <p>
                 Quotes are best effort, cached for ten minutes, and may be delayed or unavailable.
-                Filings can be late or contain errors. The bot watches Form 4 filings, not
-                amendments (Form 4/A), so always check the source.
+                Filings can be late or contain errors. Form 4/A amendments get separate correction
+                notices. We link an original only when the match is unambiguous; corrections are not
+                new trades. Always check the source and footnotes.
               </p>
             </details>
             <details>
@@ -599,6 +671,23 @@
         </div>
         <div class="faq-list">
           <details>
+            <summary>Can I control the notifications?</summary>
+            <p>
+              Yes. Use <code>/notifications</code> to choose instant DMs, a daily digest, or off.
+              Filter by ticker, purchases or sales, minimum grade, and amount. Set quiet hours in
+              your time zone. These settings control bot DMs; channel notifications stay in your
+              Discord settings.
+            </p>
+          </details>
+          <details>
+            <summary>How do I know the service is running?</summary>
+            <p>
+              Open <strong>#service-status</strong> or use <code>/status</code> to see the latest
+              successful filing check, confirmed alert delivery, and pending queue. A quiet market
+              can mean no alerts; the check timestamp should still advance.
+            </p>
+          </details>
+          <details>
             <summary>Do I need to install anything?</summary>
             <p>
               No bot setup or separate app is needed. Join with your Discord account and the bot
@@ -618,9 +707,10 @@
             <p>
               The trial needs no card. To continue, run <code>/subscribe</code> for a checkout link
               tied to your Discord account. Premium is $5 USD per month, billed through Stripe.
-              Billing starts when you complete checkout, even if trial time remains. For
-              cancellation or billing help, contact the server owner in Discord before your next
-              renewal.
+              Billing starts when you complete checkout, even if trial time remains. Use
+              <code>/billing</code> for your private Stripe portal: manage payment details,
+              invoices, or cancel at the end of your paid period. Contact the owner if you need
+              help.
             </p>
           </details>
           <details>

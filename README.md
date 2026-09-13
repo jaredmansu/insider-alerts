@@ -31,3 +31,11 @@ the bot repository. Historical examples must be labeled; never imply a live feed
 
 The bot lives in a separate private repository. Do not copy its `.env`, database,
 member records, or credentials into this public site.
+
+
+September 13: additional scroll choreography lives in `sequence.css` and `site.js`.
+The pinned desktop sequence transitions through source, context and delivery cards;
+small/short viewports use stacked cards. Motion has a remembered on/off control,
+respects reduced-motion settings, and leaves all content visible without JavaScript.
+Updated product copy covers personal notifications, service status, amendments,
+reported ownership scope and the authenticated Stripe billing portal.
